@@ -1,0 +1,32 @@
+Model load test Dashboard - 
+https://raw.githubusercontent.com/iter8-tools/iter8/v1.1.1/grafana/http.json
+
+tf-flower load test -
+
+helm upgrade --install --repo https://iter8-tools.github.io/iter8 --version 1.1 tf-model-test iter8 --set "tasks={ready,http}" --set ready.isvc=flower-sample --set ready.timeout=180s --set http.url=http://flower-sample.default.svc.cluster.local/v1/models/flower-sample/infer --set http.payloadURL=https://gist.github.com/Amrit27k/18d478be5f03b20071ae8f211f254f61/tfserve-input.json --set http.contentType="application/json"
+
+
+Autoscaling -
+Data source - prometheus http://prometheus-server.default.svc:80
+Install via grafana.com
+
+On the WebUI of your Grafana instance, put your mouse over the + sign on the left menu, then click on Import.
+Once you are on the Import page, you can put the grafana.com dashboard ID (see table below) under Import via grafana.com then click on the Load button. Repeat for each dashboard.
+
+Grafana.com dashboard id list:
+Dashboard 	ID
+k8s-addons-prometheus.json 	19105 Y
+k8s-addons-trivy-operator.json 	16337
+k8s-system-api-server.json 	15761
+k8s-system-coredns.json 	15762
+k8s-views-global.json 	15757
+k8s-views-namespaces.json 	15758  Y
+k8s-views-nodes.json 	15759   Y
+k8s-views-pods.json 	15760   Y
+
+1860
+8685
+Knative Serving - Revision HTTP Requests (Kserve) - 18032
+https://grafana.com/grafana/dashboards/17969-kserve-modelserver-latency/ - 17969
+
+

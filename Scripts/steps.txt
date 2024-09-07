@@ -1,0 +1,34 @@
+Step 1
+INGRESS_GATEWAY_SERVICE=$(kubectl get svc --namespace istio-system --selector="app=istio-ingressgateway" --output jsonpath='{.items[0].metadata.name}')
+enigma@22Scomps004:~$ kubectl port-forward --namespace istio-system svc/${INGRESS_GATEWAY_SERVICE} 8080:80
+Step 2
+kubectl port-forward service/grafana 3000:3000
+kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+Autoscaling
+Step 3
+Flower-sample Tensorflow
+export INGRESS_HOST=localhost
+enigma@22Scomps004:~/Downloads/Dissertation$ export INGRESS_PORT=8080
+MODEL_NAME=flower-sample
+SERVICE_HOSTNAME=$(kubectl get inferenceservice $MODEL_NAME -o jsonpath='{.status.url}' | cut -d "/" -f 3)
+INPUT_PATH=input-tf.json
+
+
+hey -z 500s -c 80 -m POST -host ${SERVICE_HOSTNAME} -D $INPUT_PATH http://${INGRESS_HOST}:${INGRESS_PORT}/v1/models/$MODEL_NAME:predict
+
+For pytorch model -
+export INGRESS_HOST=localhost
+enigma@22Scomps004:~/Downloads/Dissertation$ export INGRESS_PORT=8080
+MODEL_NAME=mnist
+INPUT_PATH=mnist.json
+SERVICE_HOSTNAME=$(kubectl get inferenceservice torchserve -o jsonpath='{.status.url}' | cut -d "/" -f 3)
+hey -z 60s -c 5 -m POST -host ${SERVICE_HOSTNAME} -H "Content-Type: application/json" -D $INPUT_PATH http://${INGRESS_HOST}:${INGRESS_PORT}/v1/models/$MODEL_NAME:predict
+
+For Sklearn Model -
+export INGRESS_HOST=localhost
+enigma@22Scomps004:~/Downloads/Dissertation$ export INGRESS_PORT=8080
+MODEL_NAME=sklearn-irisv2
+INPUT_PATH=iris-input-v2
+SERVICE_HOSTNAME=$(kubectl get inferenceservice sklearn-irisv2 -o jsonpath='{.status.url}' | cut -d "/" -f 3)
+
+hey -z 60s -c 5 -m POST -host ${SERVICE_HOSTNAME} -H "Content-Type: application/json" -D $INPUT_PATH http://${INGRESS_HOST}:${INGRESS_PORT}/v1/models/$MODEL_NAME:predict
