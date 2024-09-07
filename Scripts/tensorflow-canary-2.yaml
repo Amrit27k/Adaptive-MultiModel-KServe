@@ -1,0 +1,13 @@
+apiVersion: "serving.kserve.io/v1beta1"
+kind: "InferenceService"
+metadata:
+  name: "flower-sample"
+  annotations:
+    serving.kserve.io/enable-tag-routing: "true"
+spec:
+  predictor:
+  	scaleTarget: 1
+    scaleMetric: concurrency
+    canaryTrafficPercent: 15
+    tensorflow:
+      storageUri: "gs://kfserving-examples/models/tensorflow/flowers-2"
